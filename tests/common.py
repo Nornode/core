@@ -51,6 +51,7 @@ from homeassistant.helpers import (
     entity_registry,
     intent,
     issue_registry,
+    label_registry,
     recorder as recorder_helper,
     restore_state,
     storage,
@@ -302,6 +303,7 @@ async def async_test_home_assistant(loop, load_registries=True):
             device_registry.async_load(hass),
             entity_registry.async_load(hass),
             issue_registry.async_load(hass),
+            label_registry.async_load(hass),
         )
         await hass.async_block_till_done()
 
