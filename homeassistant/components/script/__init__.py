@@ -9,6 +9,7 @@ import voluptuous as vol
 from voluptuous.humanize import humanize_error
 
 from homeassistant.components.blueprint import BlueprintInputs
+from homeassistant.components.blueprint.const import CONF_USE_BLUEPRINT
 from homeassistant.const import (
     ATTR_ENTITY_ID,
     ATTR_MODE,
@@ -18,6 +19,7 @@ from homeassistant.const import (
     CONF_ICON,
     CONF_MODE,
     CONF_NAME,
+    CONF_PATH,
     CONF_SEQUENCE,
     CONF_VARIABLES,
     SERVICE_RELOAD,
@@ -163,6 +165,21 @@ def areas_in_script(hass: HomeAssistant, entity_id: str) -> list[str]:
         return []
 
     return list(script_entity.script.referenced_areas)
+
+
+@callback
+def scripts_with_blueprint(hass: HomeAssistant, blueprint_path: str) -> list[str]:
+    """Return all scripts that reference the blueprint."""
+    if DOMAIN not in hass.data:
+        return []
+
+    component = hass.data[DOMAIN]
+
+    return [
+        script_entity.entity_id
+        for script_entity in component.entities
+        if script_entity.referenced_blueprint == blueprint_path
+    ]
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
@@ -371,6 +388,13 @@ class ScriptEntity(ToggleEntity, RestoreEntity):
     def is_on(self):
         """Return true if script is on."""
         return self.script.is_running
+
+    @property
+    def referenced_blueprint(self):
+        """Return referenced blueprint or None."""
+        if self._blueprint_inputs is None:
+            return None
+        return self._blueprint_inputs[CONF_USE_BLUEPRINT][CONF_PATH]
 
     @callback
     def async_change_listener(self):
