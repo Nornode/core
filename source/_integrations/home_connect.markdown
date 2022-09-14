@@ -60,6 +60,8 @@ Internal examples: `http://192.168.0.2:8123/auth/external/callback`, `http://hom
 
 The integration configuration will ask for the *Client ID* and *Client Secret* created above. See [Application Credentials](/integrations/application_credentials) for more details.
 
+When Authenticating towards api.home-connect.com using SingleKey ID has provided better success rate compared to standard Home Connect account.
+
 ## Services
 
 The Home Connect integration makes various services available.
